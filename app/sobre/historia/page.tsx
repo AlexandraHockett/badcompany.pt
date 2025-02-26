@@ -9,10 +9,10 @@ import {
   useAnimation,
 } from "framer-motion";
 import Image from "next/image";
-import { getAboutContentBySlug, HistoriaContent } from "@/data/aboutContent"; // Import the data function and type
+import { getAboutContentBySlug, HistoriaContent } from "@/data/aboutContent";
 
 // Animation hook for fading in items
-const useItemAnimation = () => {
+const useItemAnimation = (index: number) => {
   const controls = useAnimation();
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, amount: 0.3 });
@@ -21,7 +21,7 @@ const useItemAnimation = () => {
     if (isInView) {
       controls.start("visible");
     }
-  }, [controls, isInView]);
+  }, [controls, isInView, index]);
 
   return {
     ref,
@@ -38,7 +38,6 @@ const useItemAnimation = () => {
 };
 
 export default function Historia() {
-  // Get data from the content file with proper typing
   const historiaContent = getAboutContentBySlug("historia") as HistoriaContent;
   const { title, timeline } = historiaContent;
 
@@ -46,14 +45,23 @@ export default function Historia() {
   const timelineRef = useRef<HTMLDivElement>(null);
   const [height, setHeight] = useState(0);
 
-  const titleAnimation = useItemAnimation();
+  const titleAnimation = useItemAnimation(0);
 
   useEffect(() => {
-    if (timelineRef.current) {
-      const rect = timelineRef.current.getBoundingClientRect();
+    const timelineElement = timelineRef.current;
+    if (!timelineElement) return;
+
+    const resizeObserver = new ResizeObserver(() => {
+      const rect = timelineElement.getBoundingClientRect();
       setHeight(rect.height);
-    }
-  }, [timelineRef]);
+    });
+
+    resizeObserver.observe(timelineElement);
+
+    return () => {
+      resizeObserver.unobserve(timelineElement);
+    };
+  }, []);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -67,6 +75,7 @@ export default function Historia() {
     <section
       className="pb-16 max-w-7xl mx-auto px-4 sm:px-6"
       ref={containerRef}
+      style={{ minHeight: "100vh" }}
     >
       <motion.h1
         ref={titleAnimation.ref}
@@ -92,7 +101,7 @@ export default function Historia() {
 
         <div className="space-y-16 relative">
           {timeline.map((item, index) => {
-            const itemAnimation = useItemAnimation();
+            const itemAnimation = useItemAnimation(index);
 
             return (
               <motion.div
@@ -105,14 +114,14 @@ export default function Historia() {
                   index % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"
                 } items-start gap-8 md:gap-12`}
               >
-                {/* Year Dot - Properly positioned */}
+                {/* Year Dot */}
                 <div className="absolute left-3 md:left-1/2 transform md:-translate-x-1/2 top-0 z-30 flex items-center justify-center">
                   <div className="h-8 w-8 rounded-full bg-black/80 flex items-center justify-center">
                     <div className="h-3 w-3 rounded-full bg-neutral-200 border border-neutral-300" />
                   </div>
                 </div>
 
-                {/* Year Label - Positioned to not interfere with content */}
+                {/* Year Label */}
                 <div className="pl-12 md:pl-0 text-white text-lg font-bold md:absolute md:left-1/2 md:transform md:translate-y-[-24px] md:translate-x-[-50%] z-20">
                   {item.year}
                 </div>
@@ -130,6 +139,7 @@ export default function Historia() {
                       src={item.image}
                       alt={item.title}
                       fill
+                      sizes="(max-width: 768px) 100vw, 50vw"
                       className="object-cover transform group-hover:scale-105 transition-transform duration-700"
                     />
                   </div>
