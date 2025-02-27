@@ -1,20 +1,41 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import NodeCache from "node-cache";
 
-const cache = new NodeCache({ stdTTL: 900 }); // Cache por 15 minutos
+const cache = new NodeCache({ stdTTL: 900 }); // Cache for 15 minutes
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  // Verificar se já temos em cache
+  // Get current date and time in UTC (or adjust to your timezone)
+  const now = new Date();
+  const dayOfWeek = now.getUTCDay();
+  const hours = now.getUTCHours(); // UTC
+
+  // Adjust for UTC+1 during DST (roughly March to October)
+  const isDST = now.getMonth() >= 2 && now.getMonth() <= 9; // Approximation
+  const localHours = isDST ? hours + 1 : hours;
+
+  const isFridayNight = dayOfWeek === 5 && localHours >= 18;
+  const isSaturdayMorning = dayOfWeek === 6 && localHours < 6;
+  const isSaturdayNight = dayOfWeek === 6 && localHours >= 18;
+  const isSundayMorning = dayOfWeek === 0 && localHours < 6;
+
+  const isActiveTime =
+    isFridayNight || isSaturdayMorning || isSaturdayNight || isSundayMorning;
+
+  // If not Friday or Saturday night, return "not live" without hitting the API
+  if (!isActiveTime) {
+    return res.status(200).json({ isLive: false });
+  }
+
+  // Check cache first during active times
   const cachedStatus = cache.get("liveStatus");
   if (cachedStatus !== undefined) {
     return res.status(200).json({ isLive: cachedStatus });
   }
 
   try {
-    // Usa a versão pública para o canal (acessível no cliente) e a versão privada para a API key
     const CHANNEL_ID = process.env.NEXT_PUBLIC_YOUTUBE_CHANNEL_ID;
     const API_KEY = process.env.YOUTUBE_API_KEY;
 
@@ -38,7 +59,7 @@ export default async function handler(
       data.items?.length > 0 &&
       data.items[0].snippet.liveBroadcastContent === "live";
 
-    // Guardar no cache do servidor
+    // Store in cache
     cache.set("liveStatus", liveStatus);
 
     return res.status(200).json({ isLive: liveStatus });
