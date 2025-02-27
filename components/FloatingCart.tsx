@@ -1,5 +1,4 @@
 "use client";
-
 import { CartItem } from "@/types/types";
 import Button from "@/components/Button";
 
@@ -16,12 +15,10 @@ export default function FloatingCart({
 }: FloatingCartProps) {
   return (
     <div
-      className="fixed bottom-20 right-4 sm:bottom-6 sm:right-6 
-  w-[calc(100vw-2rem)] sm:w-80 md:w-96 bg-gray-800 rounded-xl 
-  shadow-2xl p-4 sm:p-6 border border-gray-700 
-  max-h-[calc(100vh-12rem)] sm:max-h-[calc(100vh-2rem)] 
-  overflow-y-auto transition-all duration-300
-  z-50"
+      className="fixed bottom-32 right-4 sm:bottom-20 sm:right-6 
+      w-[calc(100vw-2rem)] sm:w-80 md:w-96 bg-gray-800 rounded-xl 
+      shadow-2xl p-4 sm:p-6 border border-gray-700 
+      max-h-[calc(100vh-2rem)] overflow-y-auto transition-all duration-300 z-50"
     >
       {/* Header */}
       <div className="flex items-center justify-between mb-4 sm:mb-6">

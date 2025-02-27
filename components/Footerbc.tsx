@@ -2,9 +2,8 @@
 import { FaInstagram, FaFacebook, FaYoutube } from "react-icons/fa";
 import { motion, useAnimation } from "framer-motion";
 import { ReactElement, useEffect } from "react";
-import Button from "@/components/Button"; // Import your fancy button
+import Button from "@/components/Button";
 
-// Define interface for link objects
 interface SocialLink {
   href: string;
   icon: ReactElement;
@@ -38,11 +37,11 @@ const Footerbc: React.FC<FooterbcProps> = ({ className }) => {
 
   useEffect(() => {
     controls.start({ opacity: 1, y: 0 });
-  }, [controls]);
+  }, []); // Fixed to run once
 
   return (
     <footer
-      className={`bg-gradient-to-t from-black to-gray-900 py-8 text-white w-full ${className}`}
+      className={`relative bg-gradient-to-t from-black to-gray-900 py-8 text-white w-full z-10 ${className}`}
     >
       <div className="container mx-auto px-4">
         {/* Top Section: Logo/Branding + Socials */}
@@ -58,7 +57,6 @@ const Footerbc: React.FC<FooterbcProps> = ({ className }) => {
             </motion.span>
             <span className="text-sm">Experiências que Marcam</span>
           </div>
-
           <div className="flex gap-6">
             {links.map((link, index) => (
               <motion.a
@@ -91,36 +89,55 @@ const Footerbc: React.FC<FooterbcProps> = ({ className }) => {
             title="Junte-se à Festa"
             href="/eventos/proximos"
             leftIcon={<span>🎉</span>}
-            containerClass="bg-gray-800 hover:bg-purple-600"
+            containerClass="bg-gray-800 hover:bg-purple-600 z-10"
           />
         </div>
 
-        {/* Bottom Section: Legal + Credits */}
+        {/* Bottom Section: Legal + Credits + Socials */}
         <div className="border-t border-gray-800 pt-6 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-400">
           <p>
             © {new Date().getFullYear()} BadCompany. Todos os direitos
             reservados.
           </p>
 
-          <div className="flex gap-6">
-            <a
-              href="/politica-de-privacidade"
-              className="hover:text-purple-400 transition-colors"
-            >
-              Política de Privacidade
-            </a>
-            <a
-              href="/termos-e-condicoes"
-              className="hover:text-purple-400 transition-colors"
-            >
-              Termos e Condições
-            </a>
-            <a
-              href="/politica-de-cookies"
-              className="hover:text-purple-400 transition-colors"
-            >
-              Política de Cookies
-            </a>
+          <div className="flex flex-col md:flex-row gap-6 items-center">
+            {/* Legal Links */}
+            <div className="flex gap-6">
+              <a
+                href="/politica-de-privacidade"
+                className="hover:text-purple-400 transition-colors"
+              >
+                Política de Privacidade
+              </a>
+              <a
+                href="/termos-e-condicoes"
+                className="hover:text-purple-400 transition-colors"
+              >
+                Termos e Condições
+              </a>
+              <a
+                href="/politica-de-cookies"
+                className="hover:text-purple-400 transition-colors"
+              >
+                Política de Cookies
+              </a>
+            </div>
+            {/* Social Links */}
+            <div className="flex gap-6">
+              {links.map((link, index) => (
+                <motion.a
+                  key={`bottom-${index}`} // Unique key for bottom section
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`text-white transition-all duration-300 ${link.hoverColor}`}
+                  whileHover={{ scale: 1.2, rotate: 5 }}
+                  whileTap={{ scale: 0.9 }}
+                >
+                  {link.icon}
+                </motion.a>
+              ))}
+            </div>
           </div>
 
           <p>

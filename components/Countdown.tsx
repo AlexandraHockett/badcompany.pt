@@ -5,7 +5,13 @@ import { motion } from "framer-motion";
 type CountdownProps = { targetDate: Date };
 
 export default function Countdown({ targetDate }: CountdownProps) {
-  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft());
+  const [timeLeft, setTimeLeft] = useState(() => ({
+    days: 0,
+    hours: 0,
+    minutes: 0,
+    seconds: 0,
+  })); // Initial static value for SSR
+  const [hydrated, setHydrated] = useState(false);
 
   function calculateTimeLeft() {
     const difference = +targetDate - +new Date();
@@ -20,6 +26,8 @@ export default function Countdown({ targetDate }: CountdownProps) {
   }
 
   useEffect(() => {
+    setHydrated(true); // Mark as hydrated
+    setTimeLeft(calculateTimeLeft()); // Set initial time on client
     const timer = setInterval(() => setTimeLeft(calculateTimeLeft()), 1000);
     return () => clearInterval(timer);
   }, [targetDate]);
@@ -35,7 +43,9 @@ export default function Countdown({ targetDate }: CountdownProps) {
 
   return (
     <div className="flex gap-6 justify-center text-xl">
-      {Object.entries(timeLeft).map(([unit, value]) => (
+      {Object.entries(
+        hydrated ? timeLeft : { days: 0, hours: 0, minutes: 0, seconds: 0 }
+      ).map(([unit, value]) => (
         <motion.div
           key={unit}
           className="flex flex-col items-center bg-gray-800/50 p-4 rounded-lg"
