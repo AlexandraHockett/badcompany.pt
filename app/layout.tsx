@@ -17,7 +17,6 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "BadCompany",
   description: "Experimente o mundo da BC Landia",
-  viewport: "width=device-width, initial-scale=1.0, maximum-scale=1.0",
   openGraph: {
     title: "BC Landia",
     description: "Experimente o mundo da BC Landia",
@@ -27,13 +26,14 @@ export const metadata: Metadata = {
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_BASE_URL || "https://badcompany.pt"
   ),
-  robots: {
-    index: true,
-    follow: true,
-  },
-  other: {
-    google: "notranslate",
-  },
+  robots: { index: true, follow: true },
+  other: { google: "notranslate" },
+};
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1.0,
+  maximumScale: 1.0,
 };
 
 export default function RootLayout({

@@ -2,23 +2,15 @@
 import { useState, useEffect } from "react";
 import LoadingComponent from "./LoadingComponent";
 
-// Define Spotify Playlist Types
 interface SpotifyTrack {
-  track: {
-    name: string;
-    artists: { name: string }[];
-  };
+  track: { name: string; artists: { name: string }[] };
 }
-
 interface SpotifyPlaylist {
   name: string;
-  tracks: {
-    items: SpotifyTrack[];
-  };
+  tracks: { items: SpotifyTrack[] };
 }
-
 interface SpotifyPlaylistProps {
-  playlistId: string; // Adicione uma prop para a playlistId
+  playlistId: string;
 }
 
 export default function SpotifyPlaylist({ playlistId }: SpotifyPlaylistProps) {
@@ -27,80 +19,64 @@ export default function SpotifyPlaylist({ playlistId }: SpotifyPlaylistProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Get access token from API route
   useEffect(() => {
     const fetchToken = async () => {
       setIsLoading(true);
       try {
-        const response = await fetch("/api/auth");
-
+        const apiUrl =
+          process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+        const response = await fetch(`${apiUrl}/api/auth`);
         if (!response.ok) {
-          throw new Error(`Error ${response.status}: ${response.statusText}`);
+          const errorData = await response.json().catch(() => ({}));
+          throw new Error(errorData.error || `HTTP error ${response.status}`);
         }
-
         const data = await response.json();
-        if (data.access_token) {
-          setAccessToken(data.access_token);
-          setError(null);
-        } else {
-          console.error("No access token in response:", data);
-          setError("Failed to get access token");
-        }
-      } catch (error) {
+        if (!data.access_token) throw new Error("No access token in response");
+        setAccessToken(data.access_token);
+      } catch (err: unknown) {
+        // Type 'err' as Error
+        const error = err instanceof Error ? err : new Error("Unknown error");
         console.error("Failed to fetch token:", error);
-        setError("Failed to authenticate with Spotify");
+        setError(error.message || "Failed to authenticate with Spotify");
       } finally {
         setIsLoading(false);
       }
     };
-
     fetchToken();
   }, []);
 
-  // Fetch playlist data
   useEffect(() => {
-    if (!accessToken || !playlistId) return; // Verifique se playlistId está definido
+    if (!accessToken || !playlistId) return;
 
     const fetchPlaylist = async () => {
       try {
         const response = await fetch(
           `https://api.spotify.com/v1/playlists/${playlistId}`,
-          {
-            headers: { Authorization: `Bearer ${accessToken}` },
-          }
+          { headers: { Authorization: `Bearer ${accessToken}` } }
         );
-
-        if (!response.ok) {
-          throw new Error(`Error ${response.status}: ${response.statusText}`);
-        }
-
+        if (!response.ok)
+          throw new Error(`Playlist fetch failed: ${response.status}`);
         const data: SpotifyPlaylist = await response.json();
         setPlaylist(data);
-        setError(null);
-      } catch (error) {
+      } catch (err: unknown) {
+        // Type 'err' as Error
+        const error = err instanceof Error ? err : new Error("Unknown error");
         console.error("Failed to fetch playlist:", error);
-        setError("Failed to load playlist");
+        setError(error.message || "Failed to load playlist");
       } finally {
         setIsLoading(false);
       }
     };
-
     fetchPlaylist();
-  }, [accessToken, playlistId]); // Adicione playlistId como dependência
+  }, [accessToken, playlistId]);
 
-  // Show loading spinner while fetching data
-  if (isLoading) {
-    return <LoadingComponent />;
-  }
-
-  // Show error message if something went wrong
-  if (error) {
+  if (typeof window === "undefined" || isLoading) return <LoadingComponent />;
+  if (error)
     return (
       <div className="flex justify-center items-center h-64">
         <p className="text-red-500">{error}</p>
       </div>
     );
-  }
 
   return (
     <section id="playlist" className="py-16 w-screen text-white">
@@ -110,7 +86,6 @@ export default function SpotifyPlaylist({ playlistId }: SpotifyPlaylistProps) {
         </h2>
         <div className="relative w-full bg-gradient-to-b from-[#67676f] to-zinc-700 rounded-xl shadow-2xl overflow-hidden">
           <div className="flex justify-center items-center w-full py-10">
-            {/* Spotify Embedded Player */}
             <div className="w-full max-w-5xl min-w-[320px]">
               <iframe
                 style={{ borderRadius: "12px" }}
@@ -121,7 +96,7 @@ export default function SpotifyPlaylist({ playlistId }: SpotifyPlaylistProps) {
                 allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
                 loading="lazy"
                 className="min-h-[352px]"
-              ></iframe>
+              />
             </div>
           </div>
         </div>

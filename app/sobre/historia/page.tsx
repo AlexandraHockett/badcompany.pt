@@ -1,6 +1,5 @@
 "use client";
-
-import React, { useEffect, useRef, useState } from "react";
+import React, { useLayoutEffect, useRef, useState } from "react";
 import {
   motion,
   useScroll,
@@ -17,7 +16,7 @@ const useItemAnimation = (index: number) => {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, amount: 0.3 });
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (isInView) {
       controls.start("visible");
     }
@@ -47,7 +46,7 @@ export default function Historia() {
 
   const titleAnimation = useItemAnimation(0);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const timelineElement = timelineRef.current;
     if (!timelineElement) return;
 
@@ -73,9 +72,9 @@ export default function Historia() {
 
   return (
     <section
-      className="pb-16 max-w-7xl mx-auto px-4 sm:px-6"
+      className="pb-16 max-w-7xl mx-auto px-4 sm:px-6 relative relative-container"
       ref={containerRef}
-      style={{ minHeight: "100vh" }}
+      style={{ minHeight: "100vh", position: "relative" }}
     >
       <motion.h1
         ref={titleAnimation.ref}
@@ -87,7 +86,10 @@ export default function Historia() {
         {title}
       </motion.h1>
 
-      <div ref={timelineRef} className="relative max-w-6xl mx-auto">
+      <div
+        ref={timelineRef}
+        className="relative max-w-6xl mx-auto relative-container"
+      >
         {/* Animated Timeline Line */}
         <div className="absolute left-3 md:left-1/2 transform md:-translate-x-[1px] top-0 overflow-hidden w-[2px] h-full bg-[linear-gradient(to_bottom,var(--tw-gradient-stops))] from-transparent from-[0%] via-neutral-700 to-transparent to-[99%]">
           <motion.div
