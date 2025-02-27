@@ -15,21 +15,24 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "BC Landia",
+  title: "BadCompany",
   description: "Experimente o mundo da BC Landia",
+  viewport: "width=device-width, initial-scale=1.0, maximum-scale=1.0",
   openGraph: {
     title: "BC Landia",
     description: "Experimente o mundo da BC Landia",
     type: "website",
-    locale: "pt_PT", // ou pt_BR se for português do Brasil
+    locale: "pt_PT",
   },
-  metadataBase: new URL("https://badcompany.pt"),
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_BASE_URL || "https://badcompany.pt"
+  ),
   robots: {
     index: true,
     follow: true,
   },
   other: {
-    google: "notranslate", // Previne tradução automática do Google
+    google: "notranslate",
   },
 };
 
@@ -40,14 +43,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt" translate="no">
-      {" "}
-      {/* Definido como português */}
-      <head>
-        <meta
-          name="viewport"
-          content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
-        />
-      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} flex flex-col min-h-screen`}
       >
