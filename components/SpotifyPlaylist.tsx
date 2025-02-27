@@ -15,33 +15,35 @@ interface SpotifyPlaylistProps {
 
 export default function SpotifyPlaylist({ playlistId }: SpotifyPlaylistProps) {
   const [playlist, setPlaylist] = useState<SpotifyPlaylist | null>(null);
-  const [accessToken, setAccessToken] = useState<string>("");
+  const [accessToken, setAccessToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchToken = async () => {
-      setIsLoading(true);
       try {
         const apiUrl =
-          process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+          process.env.NEXT_PUBLIC_SPOTIFY_API_URL || "http://localhost:3000";
         const response = await fetch(`${apiUrl}/api/auth`);
+
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({}));
           throw new Error(errorData.error || `HTTP error ${response.status}`);
         }
+
         const data = await response.json();
         if (!data.access_token) throw new Error("No access token in response");
+
         setAccessToken(data.access_token);
       } catch (err: unknown) {
-        // Type 'err' as Error
         const error = err instanceof Error ? err : new Error("Unknown error");
         console.error("Failed to fetch token:", error);
-        setError(error.message || "Failed to authenticate with Spotify");
+        setError(error.message || "Falha ao autenticar com o Spotify");
       } finally {
         setIsLoading(false);
       }
     };
+
     fetchToken();
   }, []);
 
@@ -49,28 +51,33 @@ export default function SpotifyPlaylist({ playlistId }: SpotifyPlaylistProps) {
     if (!accessToken || !playlistId) return;
 
     const fetchPlaylist = async () => {
+      setIsLoading(true);
+      setError(null);
+
       try {
         const response = await fetch(
           `https://api.spotify.com/v1/playlists/${playlistId}`,
           { headers: { Authorization: `Bearer ${accessToken}` } }
         );
+
         if (!response.ok)
           throw new Error(`Playlist fetch failed: ${response.status}`);
+
         const data: SpotifyPlaylist = await response.json();
         setPlaylist(data);
       } catch (err: unknown) {
-        // Type 'err' as Error
         const error = err instanceof Error ? err : new Error("Unknown error");
         console.error("Failed to fetch playlist:", error);
-        setError(error.message || "Failed to load playlist");
+        setError(error.message || "Falha ao carregar a playlist");
       } finally {
         setIsLoading(false);
       }
     };
+
     fetchPlaylist();
   }, [accessToken, playlistId]);
 
-  if (typeof window === "undefined" || isLoading) return <LoadingComponent />;
+  if (isLoading) return <LoadingComponent />;
   if (error)
     return (
       <div className="flex justify-center items-center h-64">
