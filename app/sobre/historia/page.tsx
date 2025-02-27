@@ -1,5 +1,5 @@
 "use client";
-import React, { useLayoutEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   motion,
   useScroll,
@@ -16,7 +16,7 @@ const useItemAnimation = (index: number) => {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, amount: 0.3 });
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (isInView) {
       controls.start("visible");
     }
@@ -46,35 +46,41 @@ export default function Historia() {
 
   const titleAnimation = useItemAnimation(0);
 
-  useLayoutEffect(() => {
-    const timelineElement = timelineRef.current;
-    if (!timelineElement) return;
+  // Calculate timeline height
+  useEffect(() => {
+    const updateHeight = () => {
+      if (timelineRef.current) {
+        const rect = timelineRef.current.getBoundingClientRect();
+        setHeight(rect.height);
+      }
+    };
 
-    const resizeObserver = new ResizeObserver(() => {
-      const rect = timelineElement.getBoundingClientRect();
-      setHeight(rect.height);
-    });
-
-    resizeObserver.observe(timelineElement);
+    updateHeight(); // Initial call
+    window.addEventListener("resize", updateHeight);
 
     return () => {
-      resizeObserver.unobserve(timelineElement);
+      window.removeEventListener("resize", updateHeight);
     };
-  }, []);
+  }, [timeline]);
 
+  // Scroll tracking
   const { scrollYProgress } = useScroll({
-    target: containerRef,
-    offset: ["start 20%", "end 80%"],
+    target: timelineRef,
+    offset: ["start end", "end start"],
   });
 
   const heightTransform = useTransform(scrollYProgress, [0, 1], [0, height]);
-  const opacityTransform = useTransform(scrollYProgress, [0, 0.1], [0, 1]);
+  const opacityTransform = useTransform(scrollYProgress, [0, 0.5], [0, 1]);
 
   return (
     <section
-      className="pb-16 max-w-7xl mx-auto px-4 sm:px-6 relative relative-container"
+      className="pb-16 max-w-7xl mx-auto px-4 sm:px-6 pt-[96px]"
       ref={containerRef}
-      style={{ minHeight: "100vh", position: "relative" }}
+      style={{
+        minHeight: "100vh",
+        position: "relative",
+        overflow: "visible",
+      }}
     >
       <motion.h1
         ref={titleAnimation.ref}
@@ -91,13 +97,13 @@ export default function Historia() {
         className="relative max-w-6xl mx-auto relative-container"
       >
         {/* Animated Timeline Line */}
-        <div className="absolute left-3 md:left-1/2 transform md:-translate-x-[1px] top-0 overflow-hidden w-[2px] h-full bg-[linear-gradient(to_bottom,var(--tw-gradient-stops))] from-transparent from-[0%] via-neutral-700 to-transparent to-[99%]">
+        <div className="absolute left-3 md:left-1/2 transform md:-translate-x-[1px] top-0 w-[2px] h-full bg-gradient-to-t from-purple-500 via-blue-500 to-transparent">
           <motion.div
             style={{
               height: heightTransform,
               opacity: opacityTransform,
             }}
-            className="absolute inset-x-0 top-0 w-[2px] bg-gradient-to-t from-purple-500 via-blue-500 to-transparent from-[0%] via-[10%] rounded-full"
+            className="absolute inset-x-0 top-0 w-[2px] bg-neutral-700 rounded-full"
           />
         </div>
 
@@ -116,9 +122,9 @@ export default function Historia() {
                   index % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"
                 } items-start gap-8 md:gap-12`}
               >
-                {/* Year Dot */}
+                {/* Year Dot with Gradient Border */}
                 <div className="absolute left-3 md:left-1/2 transform md:-translate-x-1/2 top-0 z-30 flex items-center justify-center">
-                  <div className="h-8 w-8 rounded-full bg-black/80 flex items-center justify-center">
+                  <div className="h-8 w-8 rounded-full bg-black/80 border-2 gradient-border flex items-center justify-center">
                     <div className="h-3 w-3 rounded-full bg-neutral-200 border border-neutral-300" />
                   </div>
                 </div>

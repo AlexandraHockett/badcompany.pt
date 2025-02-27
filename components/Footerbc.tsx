@@ -122,22 +122,8 @@ const Footerbc: React.FC<FooterbcProps> = ({ className }) => {
                 Política de Cookies
               </a>
             </div>
-            {/* Social Links */}
-            <div className="flex gap-6">
-              {links.map((link, index) => (
-                <motion.a
-                  key={`bottom-${index}`} // Unique key for bottom section
-                  href={link.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`text-white transition-all duration-300 ${link.hoverColor}`}
-                  whileHover={{ scale: 1.2, rotate: 5 }}
-                  whileTap={{ scale: 0.9 }}
-                >
-                  {link.icon}
-                </motion.a>
-              ))}
-            </div>
+            
+            
           </div>
 
           <p>

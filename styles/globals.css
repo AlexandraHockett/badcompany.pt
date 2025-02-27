@@ -129,3 +129,16 @@ body {
 .relative-container {
   position: relative !important;
 }
+
+.gradient-border {
+  border: 2px solid transparent;
+  background: linear-gradient(to bottom, #bfdbfe, #9333ea) border-box; /* blue-200 to purple-500 */
+  -webkit-mask:
+    linear-gradient(#fff 0 0) padding-box,
+    linear-gradient(#fff 0 0);
+  mask:
+    linear-gradient(#fff 0 0) padding-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: exclude;
+  mask-composite: exclude;
+}

@@ -67,7 +67,14 @@ export default function EventosPassados() {
       <div
         ref={scrollRef}
         className="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide gap-4 px-4"
-        style={{ scrollSnapType: "x mandatory" }}
+        style={{
+          scrollSnapType: "x mandatory",
+          touchAction: "pan-x", // Allows vertical scrolls to propagate to the window
+        }}
+        onScroll={(e) => {
+          // Prevent this scroll event from stopping propagation
+          e.stopPropagation = function () {};
+        }}
       >
         {events.map((event, idx) => (
           <motion.div

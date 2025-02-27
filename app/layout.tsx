@@ -41,13 +41,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt" translate="no">
-      <body className="flex flex-col min-h-screen">
+    <html lang="pt" className={`${geistSans.variable} ${geistMono.variable}`}>
+      <body className="min-h-screen flex flex-col">
         <Header />
-
-        {/* ✅ Faz o main crescer para empurrar o footer para o final */}
-        <main className="flex-1 w-full">{children}</main>
-
+        <main className="flex-grow">
+          {/* This makes the main grow to push footer to the bottom */}
+          {children}
+        </main>
         <Footerbc />
       </body>
     </html>

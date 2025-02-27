@@ -1,5 +1,6 @@
 "use client";
 import dynamic from "next/dynamic";
+import { useEffect } from "react";
 
 // Dynamically import InteractiveMap with SSR disabled
 const InteractiveMap = dynamic(() => import("@/components/InteractiveMap"), {
@@ -20,6 +21,18 @@ type Location = {
 };
 
 export default function MapaEventos() {
+  useEffect(() => {
+    // Force normal scrolling behavior at the document level
+    document.documentElement.style.overflow = "auto";
+    document.body.style.overflow = "auto";
+
+    return () => {
+      // Cleanup when component unmounts
+      document.documentElement.style.overflow = "";
+      document.body.style.overflow = "";
+    };
+  }, []);
+
   const locations: Location[] = [
     {
       name: "Londres, Inglaterra",

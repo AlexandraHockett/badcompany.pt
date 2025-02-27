@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ProductCard from "@/components/ProductCard";
 import TicketSection from "@/components/TicketSection";
 import FloatingCart from "@/components/FloatingCart";
@@ -43,6 +43,18 @@ export default function LojaPage() {
   const onRemoveAll = (itemId: number) => {
     setCartItems((prevItems) => prevItems.filter((item) => item.id !== itemId));
   };
+
+  useEffect(() => {
+    // Force normal scrolling behavior at the document level
+    document.documentElement.style.overflow = "auto";
+    document.body.style.overflow = "auto";
+
+    return () => {
+      // Cleanup when component unmounts
+      document.documentElement.style.overflow = "";
+      document.body.style.overflow = "";
+    };
+  }, []);
 
   return (
     <div className="text-white min-h-screen">

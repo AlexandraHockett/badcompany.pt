@@ -2,6 +2,7 @@
 import BudgetForm from "@/components/BudgetForm";
 import { motion } from "framer-motion";
 import Button from "@/components/Button"; // Importe o componente Button
+import { useEffect } from "react";
 
 type EventExample = {
   title: string;
@@ -10,6 +11,18 @@ type EventExample = {
 };
 
 export default function EventosPrivados() {
+  useEffect(() => {
+    // Force normal scrolling behavior at the document level
+    document.documentElement.style.overflow = "auto";
+    document.body.style.overflow = "auto";
+
+    return () => {
+      // Cleanup when component unmounts
+      document.documentElement.style.overflow = "";
+      document.body.style.overflow = "";
+    };
+  }, []);
+
   const eventExamples: EventExample[] = [
     {
       title: "BCLândia",

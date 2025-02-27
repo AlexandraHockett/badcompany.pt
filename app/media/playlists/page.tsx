@@ -1,8 +1,21 @@
 "use client";
 
 import SpotifyPlayerOnly from "@/components/SpotifyPlayerOnly";
+import { useEffect } from "react";
 
 export default function PlaylistsPage() {
+  useEffect(() => {
+    // Force normal scrolling behavior at the document level
+    document.documentElement.style.overflow = "auto";
+    document.body.style.overflow = "auto";
+
+    return () => {
+      // Cleanup when component unmounts
+      document.documentElement.style.overflow = "";
+      document.body.style.overflow = "";
+    };
+  }, []);
+
   // Lista de playlists com seus respectivos IDs
   const playlists = [
     { id: "487jKTFqWhs6b0AEUz0WpX", name: "AfroHouse" },

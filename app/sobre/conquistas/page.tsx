@@ -5,6 +5,18 @@ import { motion, useInView, useAnimation } from "framer-motion";
 import { aboutContent } from "@/data/aboutContent";
 
 const useSectionAnimation = () => {
+  useEffect(() => {
+    // Force normal scrolling behavior at the document level
+    document.documentElement.style.overflow = "auto";
+    document.body.style.overflow = "auto";
+
+    return () => {
+      // Cleanup when component unmounts
+      document.documentElement.style.overflow = "";
+      document.body.style.overflow = "";
+    };
+  }, []);
+
   const controls = useAnimation();
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, amount: 0.3 });

@@ -25,7 +25,7 @@ export default function Breadcrumbs({
   }
 
   return (
-    <nav className="mb-4 text-gray-300">
+    <nav className="lg:ml-20 ml-10 mb-4 text-gray-300">
       {crumbs.map((crumb, index) => (
         <span key={crumb.href}>
           {index > 0 && " > "}

@@ -2,10 +2,8 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { useWindowScroll } from "react-use";
 import gsap from "gsap";
-
-import { FaBars, FaTimes } from "react-icons/fa"; // Using react-icons
+import { FaBars, FaTimes } from "react-icons/fa";
 import Playbutton from "./Playbutton";
 
 const navItems: { label: string; href: string }[] = [
@@ -32,31 +30,46 @@ const Header: React.FC<HeaderProps> = ({ className }) => {
   const mobileNavRef = useRef<HTMLDivElement>(null);
   const audioElementRef = useRef<HTMLAudioElement>(null);
 
-  const { y: currentScrollY } = useWindowScroll();
-
+  // Track scroll position with a more reliable approach
   useEffect(() => {
-    if (navContainerRef.current) {
-      if (currentScrollY === 0) {
-        setIsNavVisible(true);
-        navContainerRef.current.classList.remove("floating-nav");
-      } else if (currentScrollY > lastScrollY) {
-        setIsNavVisible(false);
-        navContainerRef.current.classList.add("floating-nav");
-      } else if (currentScrollY < lastScrollY) {
-        setIsNavVisible(true);
-        navContainerRef.current.classList.add("floating-nav");
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+
+      if (navContainerRef.current) {
+        if (currentScrollY <= 10) {
+          // At top of page
+          setIsNavVisible(true);
+          navContainerRef.current.classList.remove("floating-nav");
+        } else if (currentScrollY > lastScrollY + 10) {
+          // Scrolling down (with threshold to avoid micro-movements)
+          setIsNavVisible(false);
+          navContainerRef.current.classList.add("floating-nav");
+        } else if (currentScrollY < lastScrollY - 10) {
+          // Scrolling up (with threshold to avoid micro-movements)
+          setIsNavVisible(true);
+          navContainerRef.current.classList.add("floating-nav");
+        }
       }
-    }
 
-    setLastScrollY(currentScrollY);
-  }, [currentScrollY, lastScrollY]);
+      setLastScrollY(currentScrollY);
+    };
 
+    // Use passive: true for better performance
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [lastScrollY]);
+
+  // Apply animation when visibility changes
   useEffect(() => {
     if (navContainerRef.current) {
       gsap.to(navContainerRef.current, {
         y: isNavVisible ? 0 : -100,
         opacity: isNavVisible ? 1 : 0,
-        duration: 0.2,
+        duration: 0.3,
+        ease: "power2.out",
       });
     }
   }, [isNavVisible]);
