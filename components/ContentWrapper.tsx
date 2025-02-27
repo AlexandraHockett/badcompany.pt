@@ -28,7 +28,7 @@ export default function ContentWrapper({ slug }: ContentWrapperProps) {
     case "historia":
       const historiaContent = content as HistoriaContent;
       return (
-        <section className="pb-16 max-w-[90%] mx-auto">
+        <section className="pb-16 max-w-full mx-auto">
           <motion.h2
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
@@ -73,7 +73,7 @@ export default function ContentWrapper({ slug }: ContentWrapperProps) {
     case "equipa":
       const equipaContent = content as EquipaContent;
       return (
-        <section className="pb-16 max-w-[90%] mx-auto px-4">
+        <section className="pb-16 max-w-full mx-auto px-4">
           <motion.h2
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
@@ -119,7 +119,7 @@ export default function ContentWrapper({ slug }: ContentWrapperProps) {
     case "missao":
       const missaoContent = content as MissaoContent;
       return (
-        <section className="pb-16 max-w-[90%] mx-auto px-4">
+        <section className="pb-16 max-w-full mx-auto px-4">
           <motion.h2
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
@@ -143,7 +143,7 @@ export default function ContentWrapper({ slug }: ContentWrapperProps) {
     case "conquistas":
       const conquistasContent = content as ConquistasContent;
       return (
-        <section className="pb-16 max-w-[90%] mx-auto px-4">
+        <section className="pb-16 max-w-full mx-auto px-4">
           <motion.h2
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}

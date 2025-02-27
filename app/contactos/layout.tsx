@@ -28,7 +28,7 @@ export default async function ContactosLayout({ children, params }: Props) {
         </div>
 
         {/* Conteúdo Principal */}
-        <div className="max-w-[90%] mx-auto px-4 pt-24 sm:pt-36 md:pt-40 relative z-20">
+        <div className="max-w-full mx-auto px-4 pt-24 sm:pt-36 md:pt-40 relative z-20">
           <Breadcrumbs
             slug={resolvedParams?.slug}
             basePath="contactos"

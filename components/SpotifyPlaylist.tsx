@@ -87,7 +87,7 @@ export default function SpotifyPlaylist({ playlistId }: SpotifyPlaylistProps) {
 
   return (
     <section id="playlist" className="py-16 w-screen text-white">
-      <div className="max-w-[90%] mx-auto px-4">
+      <div className="max-w-full mx-auto px-4">
         <h2 className="text-4xl sm:text-5xl font-zentry text-center mb-12">
           Nossa Playlist
         </h2>
