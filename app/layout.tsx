@@ -42,11 +42,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt" translate="no">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} flex flex-col min-h-screen`}
-      >
+      <body className="flex flex-col min-h-screen">
         <Header />
-        <main className="flex-1">{children}</main>
+
+        {/* ✅ Faz o main crescer para empurrar o footer para o final */}
+        <main className="flex-1 w-full">{children}</main>
+
         <Footerbc />
       </body>
     </html>

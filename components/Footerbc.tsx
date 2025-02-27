@@ -42,7 +42,7 @@ const Footerbc: React.FC<FooterbcProps> = ({ className }) => {
 
   return (
     <footer
-      className={`w-screen bg-gradient-to-t from-black to-gray-900 py-8 text-white ${className}`}
+      className={`bg-gradient-to-t from-black to-gray-900 py-8 text-white w-full ${className}`}
     >
       <div className="container mx-auto px-4">
         {/* Top Section: Logo/Branding + Socials */}
@@ -135,13 +135,6 @@ const Footerbc: React.FC<FooterbcProps> = ({ className }) => {
           </p>
         </div>
       </div>
-
-      {/* Optional: Subtle Background Animation */}
-      <motion.div
-        className="absolute inset-0 bg-[radial-gradient(circle_at_center,#4B0082_0%,transparent_70%)] opacity-20"
-        animate={{ scale: [1, 1.05, 1], opacity: [0.2, 0.3, 0.2] }}
-        transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-      />
     </footer>
   );
 };
