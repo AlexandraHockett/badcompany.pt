@@ -20,7 +20,7 @@ type InteractiveMapProps = {
   locations: Location[];
 };
 
-// Função para criar o ícone, carregada dinamicamente
+// Function to create custom icon, loaded dynamically
 const createCustomIcon = async () => {
   const L = (await import("leaflet")).default;
   return L.icon({
@@ -33,9 +33,9 @@ const createCustomIcon = async () => {
   });
 };
 
+// Center Map Button component
 function CenterMapButton({ coords }: { coords: [number, number] }) {
   const map = useMap();
-
   const centerMap = () => {
     map.setView(coords, 4);
   };
@@ -94,7 +94,37 @@ export default function InteractiveMap({ locations }: InteractiveMapProps) {
         ))}
         <CenterMapButton coords={[0, 0]} />
       </MapContainer>
-      {/* ... (rest of your JSX remains unchanged) */}
+
+      {selectedLocation && (
+        <div className="absolute top-4 left-4 bg-black/80 p-4 rounded-lg z-[1000] backdrop-blur-sm text-white">
+          <h3 className="text-xl font-bold">{selectedLocation.name}</h3>
+          <div className="flex gap-2 mt-2">
+            {selectedLocation.images.map((img, idx) => (
+              <img
+                key={idx}
+                src={img}
+                alt={selectedLocation.name}
+                className="w-24 h-24 object-cover rounded-lg shadow-lg"
+              />
+            ))}
+          </div>
+          <div className="mt-4">
+            {selectedLocation.events.map((event, idx) => (
+              <div key={idx} className="mb-4">
+                <h4 className="text-lg font-semibold">{event.name}</h4>
+                <p className="text-sm text-gray-300">{event.date}</p>
+                <p className="text-sm text-gray-300">{event.description}</p>
+              </div>
+            ))}
+          </div>
+          <button
+            onClick={() => setSelectedLocation(null)}
+            className="mt-2 text-red-500 hover:underline"
+          >
+            Fechar
+          </button>
+        </div>
+      )}
     </div>
   );
 }

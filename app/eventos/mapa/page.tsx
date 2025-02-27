@@ -38,7 +38,7 @@ export default function MapaEventos() {
       name: "Londres, Inglaterra",
       coords: [51.5074, -0.1278],
       images: [
-        "https://upload.wikimedia.org/wikipedia/commons/8/87/London_Thames_Sunset_panorama_-_Feb_2008.jpg",
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Flag_of_the_United_Kingdom_%283-5%29.svg/1200px-Flag_of_the_United_Kingdom_%283-5%29.svg.png",
       ],
       events: [
         {
