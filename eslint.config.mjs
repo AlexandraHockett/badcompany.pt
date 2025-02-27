@@ -1,6 +1,7 @@
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 import { FlatCompat } from "@eslint/eslintrc";
+import pluginImport from "eslint-plugin-import"; // Import the plugin explicitly
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -17,7 +18,9 @@ const eslintConfig = [
     "prettier"
   ),
   {
-    plugins: ["import"],
+    plugins: {
+      import: pluginImport, // Use object format with imported plugin
+    },
     rules: {
       "import/order": [
         "error",
@@ -58,4 +61,4 @@ const eslintConfig = [
   },
 ];
 
-export default eslintConfig;
+module.exports = eslintConfig;
